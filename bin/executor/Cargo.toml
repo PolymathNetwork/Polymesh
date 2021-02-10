@@ -12,9 +12,12 @@ repository = "https://github.com/PolymathNetwork/substrate/"
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
+node-primitives = { package = "polymesh-primitives", path = "../../core/primitives" }
+node-runtime = { package = "polymesh-runtime-testnet", path = "../../core/runtime/testnet" }
+pallet-confidential = { path = "../../core/pallets/confidential" }
+
+# Substrate
 codec = { package = "parity-scale-codec", version = "1.3.4" }
-node-primitives = { package = "polymesh-primitives", path = "../../primitives" }
-node-runtime = { package = "polymesh-runtime-testnet", path = "../../pallets/runtime/testnet" }
 sc-executor = { git = "https://github.com/PolymathNetwork/substrate", tag = "v2.0.1-1", features = ["wasmtime"] }
 sp-core = { git = "https://github.com/PolymathNetwork/substrate", tag = "v2.0.1-1" }
 sp-io = { git = "https://github.com/PolymathNetwork/substrate", tag = "v2.0.1-1" }
@@ -22,13 +25,12 @@ sp-state-machine = { git = "https://github.com/PolymathNetwork/substrate", tag =
 sp-trie = { git = "https://github.com/PolymathNetwork/substrate", tag = "v2.0.1-1" }
 trie-root = "0.16.0"
 frame-benchmarking = { git = "https://github.com/PolymathNetwork/substrate", tag = "v2.0.1-1" }
-pallet-confidential = { path = "../../pallets/confidential" }
 
 [dev-dependencies]
 node-testing = { path = "../testing" }
-pallet-transaction-payment = { path = "../../pallets/transaction-payment" }
-pallet-balances = { path = "../../pallets/balances" }
-pallet-im-online = { path = "../../pallets/im-online" }
+pallet-transaction-payment = { path = "../../core/pallets/transaction-payment" }
+pallet-balances = { path = "../../core/pallets/balances" }
+pallet-im-online = { path = "../../core/pallets/im-online" }
 
 criterion = "0.3.0"
 frame-support = { git = "https://github.com/PolymathNetwork/substrate", tag = "v2.0.1-1" }

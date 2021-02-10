@@ -17,75 +17,80 @@ members = [
     "migration-tests",
     "migration-tests/remote-externalities",
     "node-rpc",
-    "pallets/asset",
-    "pallets/balances",
-    "pallets/bridge",
-    "pallets/committee",
-    "pallets/common",
-    "pallets/compliance-manager",
-    "pallets/confidential",
-    "pallets/corporate-actions",
-    "pallets/group",
-    "pallets/group/rpc",
-    "pallets/group/rpc/runtime-api",
-    "pallets/identity",
-    "pallets/im-online",
-    "pallets/multisig",
-    "pallets/pips",
-    "pallets/protocol-fee",
-    "pallets/protocol-fee/rpc",
-    "pallets/protocol-fee/rpc/runtime-api",
-    "pallets/runtime/common",
-    "pallets/runtime/extensions",
-    "pallets/runtime/develop",
-    "pallets/runtime/testnet",
-    "pallets/runtime/tests",
-    "pallets/settlement",
-    "pallets/staking",
-    "pallets/staking/rpc",
-    "pallets/staking/rpc/runtime-api",
-    "pallets/statistics",
-    "pallets/sto",
-    "pallets/transaction-payment",
-    "pallets/treasury",
-    "pallets/utility",
-    "pallets/contracts",
+    "core/primitives",
+    "core/primitives_derive",
+    "core/common",
+    "core/weights",
+    "core/pallets/asset",
+    "core/pallets/balances",
+    "core/pallets/bridge",
+    "core/pallets/committee",
+    "core/pallets/compliance-manager",
+    "core/pallets/confidential",
+    "core/pallets/corporate-actions",
+    "core/pallets/group",
+    "core/pallets/group/rpc",
+    "core/pallets/group/rpc/runtime-api",
+    "core/pallets/identity",
+    "core/pallets/im-online",
+    "core/pallets/multisig",
+    "core/pallets/pips",
+    "core/pallets/protocol-fee",
+    "core/pallets/protocol-fee/rpc",
+    "core/pallets/protocol-fee/rpc/runtime-api",
+    "core/pallets/settlement",
+    "core/pallets/staking",
+    "core/pallets/staking/rpc",
+    "core/pallets/staking/rpc/runtime-api",
+    "core/pallets/statistics",
+    "core/pallets/sto",
+    "core/pallets/transaction-payment",
+    "core/pallets/treasury",
+    "core/pallets/utility",
+    "core/pallets/contracts",
+    "core/runtime/common",
+    "core/runtime/extensions",
+    "core/runtime/develop",
+    "core/runtime/testnet",
+    "core/tests",
     "node-rpc",
-    "pallets/weights",
-    "primitives",
     "rpc",
     "rpc/runtime-api",
 ]
 
 [dependencies]
-im-online = { package = "pallet-im-online", path = "pallets/im-online" }
-pallet-asset = { path = "pallets/asset" }
-pallet-balances = { path = "pallets/balances", default-features = false  }
-pallet-committee = { path = "pallets/committee", default-features = false }
-pallet-confidential = { path = "pallets/confidential" }
-pallet-corporate-actions = { path = "pallets/corporate-actions", default-features = false }
-pallet-group = { path = "pallets/group", default-features = false }
-pallet-protocol-fee = { path = "pallets/protocol-fee", default-features = false }
-pallet-staking = { path = "pallets/staking", default-features = false }
-polymesh-common-utilities = { path = "pallets/common", default-features = false }
-polymesh-primitives = { path = "primitives", default-features = false }
-polymesh-runtime-common = { path = "pallets/runtime/common", default-features = false }
+polymesh-primitives = { path = "core/primitives" }
+polymesh-common-utilities = { path = "core/common" }
+
+# Our pallets
+im-online = { package = "pallet-im-online", path = "core/pallets/im-online" }
+pallet-asset = { path = "core/pallets/asset" }
+pallet-balances = { path = "core/pallets/balances" }
+pallet-committee = { path = "core/pallets/committee" }
+pallet-confidential = { path = "core/pallets/confidential" }
+pallet-corporate-actions = { path = "core/pallets/corporate-actions" }
+pallet-group = { path = "core/pallets/group" }
+pallet-protocol-fee = { path = "core/pallets/protocol-fee" }
+pallet-staking = { path = "core/pallets/staking" }
+
+polymesh-runtime-common = { path = "core/runtime/common" }
 
 # RPC
 node-rpc = { path = "rpc" }
 node-rpc-runtime-api = { path = "rpc/runtime-api" }
-pallet-protocol-fee-rpc-runtime-api = { path = "pallets/protocol-fee/rpc/runtime-api" }
 pallet-contracts-rpc-runtime-api = { git = "https://github.com/PolymathNetwork/substrate", tag = "v2.0.1-1" }
-pallet-staking-rpc-runtime-api = { path = "pallets/staking/rpc/runtime-api" }
-pallet-protocol-fee-rpc = { path = "pallets/protocol-fee/rpc" }
-pallet-group-rpc = { path = "pallets/group/rpc" }
-pallet-group-rpc-runtime-api = { path = "pallets/group/rpc/runtime-api" }
 polymesh-node-rpc = { path = "node-rpc" }
 frame-system-rpc-runtime-api = { git = "https://github.com/PolymathNetwork/substrate", tag = "v2.0.1-1" }
+pallet-protocol-fee-rpc-runtime-api = { path = "core/pallets/protocol-fee/rpc/runtime-api" }
+pallet-staking-rpc-runtime-api = { path = "core/pallets/staking/rpc/runtime-api" }
+pallet-protocol-fee-rpc = { path = "core/pallets/protocol-fee/rpc" }
+pallet-group-rpc = { path = "core/pallets/group/rpc" }
+pallet-group-rpc-runtime-api = { path = "core/pallets/group/rpc/runtime-api" }
+
 
 # Runtimes
-polymesh-runtime-develop = { path = "pallets/runtime/develop" }
-polymesh-runtime-testnet = { path = "pallets/runtime/testnet" }
+polymesh-runtime-develop = { path = "core/runtime/develop" }
+polymesh-runtime-testnet = { path = "core/runtime/testnet" }
 
 # General
 ed25519-dalek = "1.0.0"
@@ -154,9 +159,8 @@ default_identity = [
     "polymesh-common-utilities/default_identity"
 ]
 runtime-benchmarks = [
-    "polymesh-runtime-develop/runtime-benchmarks"
+    "polymesh-runtime-develop/runtime-benchmarks",
 ]
 std = [
     "serde/std",
-    "polymesh-common-utilities/std"
 ]

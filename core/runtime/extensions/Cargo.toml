@@ -1,0 +1,35 @@
+[package]
+name = "polymesh-extensions"
+version = "0.1.0"
+authors = ["Polymath"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+polymesh-primitives = { path = "../../primitives", default-features = false }
+polymesh-common-utilities = { path = "../../common", default-features = false }
+
+pallet-transaction-payment = { path = "../../pallets/transaction-payment", default-features = false }
+pallet-permissions = { path = "../../pallets/permissions", default-features = false  }
+
+# Substrate
+frame-system = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+frame-support = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+codec = { package = "parity-scale-codec", version = "1.1.0", default-features = false, features = ["derive"] }
+sp-runtime = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+sp-std = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+
+[features]
+default = ["std"]
+std = [
+    "polymesh-primitives/std",
+    "polymesh-common-utilities/std",
+    "pallet-transaction-payment/std",
+    "pallet-permissions/std",
+    "frame-system/std",
+    "frame-support/std",
+    "sp-runtime/std",
+    "sp-std/std",
+]
+

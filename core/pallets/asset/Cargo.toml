@@ -1,0 +1,80 @@
+[package]
+name = "pallet-asset"
+version = "0.1.0"
+authors = ["Polymath"]
+edition = "2018"
+
+[dependencies]
+# Common
+polymesh-primitives = { path = "../../primitives", default-features = false }
+polymesh-primitives-derive = { path = "../../primitives_derive", default-features = false }
+polymesh-common-utilities = { path = "../../common", default-features = false }
+
+# Our Pallets
+pallet-balances = { path = "../balances", default-features = false  }
+pallet-identity = { path = "../identity", default-features = false }
+pallet-permissions = { path = "../permissions", default-features = false }
+pallet-portfolio = { path = "../portfolio", default-features = false }
+pallet-statistics = { path = "../statistics", default-features = false }
+polymesh-contracts = { path = "../contracts", default-features = false }
+
+# Other
+serde = { version = "1.0.104", default-features = false }
+serde_derive = { version = "1.0.104", optional = true, default-features = false }
+serde_json = "1.0.48"
+rustc-hex = { version = "2.1.0", default-features = false }
+hex-literal = "0.2.1"
+arrayvec = { version = "0.5.1", default-features = false }
+
+# Substrate
+codec = { package = "parity-scale-codec", version = "1.1.0", default-features = false, features = ["derive"] }
+sp-arithmetic = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+sp-core = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+sp-std = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+sp-io = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+sp-runtime = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+sp-version = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+sp-api = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+frame-system = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+frame-support = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+pallet-timestamp = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+pallet-session = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+pallet-contracts = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+
+libsecp256k1 = { version = "0.3.5", default-features = false, features = ["hmac"] }
+
+# Only in STD
+frame-benchmarking = { default-features = false, git = "https://github.com/PolymathNetwork/substrate", tag = "v2.0.1-1", optional = true }
+
+[features]
+default = ["std"]
+no_std = []
+std = [
+    "codec/std",
+    "frame-support/std",
+    "frame-system/std",
+    "pallet-balances/std",
+    "pallet-identity/std",
+    "polymesh-contracts/std",
+    "pallet-contracts/std",
+    "pallet-portfolio/std",
+    "pallet-session/std",
+    "pallet-timestamp/std",
+    "polymesh-common-utilities/std",
+    "polymesh-primitives/std",
+    "rustc-hex/std",
+    "serde/std",
+    "serde_derive",
+    "sp-api/std",
+    "sp-core/std",
+    "sp-io/std",
+    "sp-runtime/std",
+    "sp-std/std",
+    "sp-version/std",
+    "sp-arithmetic/std"
+]
+runtime-benchmarks = [
+    "frame-benchmarking",
+    "polymesh-common-utilities/runtime-benchmarks",
+    "pallet-identity/runtime-benchmarks",
+]

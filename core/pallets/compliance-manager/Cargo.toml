@@ -1,0 +1,67 @@
+[package]
+name = "pallet-compliance-manager"
+version = "0.1.0"
+authors = ["Polymath"]
+edition = "2018"
+
+[dependencies]
+# Common
+polymesh-primitives = { path = "../../primitives", default-features = false }
+polymesh-common-utilities = { path = "../../common", default-features = false }
+
+# Our pallets
+pallet-identity = { path = "../identity", default-features = false  }
+pallet-permissions = { path = "../permissions", default-features = false }
+## Only for benchmarks
+pallet-asset = { path = "../asset", optional = true, default-features = false }
+pallet-balances = { path = "../balances", optional = true, default-features = false }
+
+# Other
+serde = { version = "1.0.104", default-features = false }
+serde_derive = { version = "1.0.104", optional = true, default-features = false}
+either = { version = "1.6.1", default-features = false }
+
+# Substrate
+codec = { package = "parity-scale-codec", version = "1.2.0", default-features = false, features = ["derive"] }
+sp-core = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+sp-std = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+sp-io = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+sp-runtime = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+sp-version = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+sp-api = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+
+frame-system = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+frame-support = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+frame-benchmarking = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1", optional = true }
+
+pallet-timestamp = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+
+
+[features]
+equalize = []
+default = ["std", "equalize"]
+no_std = []
+only-staking = []
+std = [
+	"serde_derive",
+	"serde/std",
+	"codec/std",
+	"sp-std/std",
+	"sp-io/std",
+	"sp-core/std",
+	"sp-runtime/std",
+	"sp-version/std",
+	"sp-api/std",
+	"frame-system/std",
+	"frame-support/std",
+	"frame-benchmarking/std",
+	"pallet-timestamp/std",
+	"polymesh-common-utilities/std",
+	"polymesh-primitives/std",
+]
+
+runtime-benchmarks = [
+	"frame-benchmarking",
+	"pallet-asset/runtime-benchmarks",
+	"pallet-balances/runtime-benchmarks",
+]

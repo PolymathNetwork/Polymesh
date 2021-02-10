@@ -1,0 +1,70 @@
+[package]
+name = "polymesh-weights"
+version = "0.1.0"
+authors = ["Polymath"]
+edition = "2018"
+
+[dependencies]
+# substrate pallets
+frame-support = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+frame-system = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+pallet-timestamp = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+pallet-babe = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+pallet-indices = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+pallet-grandpa = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+pallet-scheduler = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+pallet-session = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+
+# our pallets
+pallet-corporate-actions = { path = "../pallets/corporate-actions", default-features = false }
+pallet-identity = { path = "../pallets/identity", default-features = false }
+pallet-pips = { path = "../pallets/pips", default-features = false }
+pallet-staking = { path = "../pallets/staking", default-features = false }
+pallet-multisig = { path = "../pallets/multisig", default-features = false  }
+pallet-portfolio = { path = "../pallets/portfolio", default-features = false }
+pallet-protocol-fee = { path = "../pallets/protocol-fee", default-features = false }
+pallet-settlement = { path = "../pallets/settlement", default-features = false }
+pallet-compliance-manager = { path = "../pallets/compliance-manager", default-features = false }
+pallet-sto = { path = "../pallets/sto", default-features = false }
+polymesh-contracts = { path = "../pallets/contracts", default-features = false }
+pallet-utility = { path = "../pallets/utility", default-features = false }
+pallet-asset = { path = "../pallets/asset", default-features = false }
+pallet-confidential = { path = "../pallets/confidential", default-features = false }
+pallet-balances = { path = "../pallets/balances", default-features = false }
+pallet-treasury = { path = "../pallets/treasury", default-features = false }
+pallet-im-online = { path = "../pallets/im-online", default-features = false }
+pallet-group = { path = "../pallets/group", default-features = false }
+pallet-committee = { path = "../pallets/committee", default-features = false }
+pallet-statistics = { path = "../pallets/statistics", default-features = false  }
+polymesh-runtime-common = { path = "../runtime/common", default-features = false }
+
+[features]
+default = ["std"]
+no_std = []
+std = [
+    "frame-system/std",
+    "pallet-asset/std",
+    "pallet-babe/std",
+    "pallet-staking/std",
+    "pallet-balances/std",
+    "pallet-compliance-manager/std",
+    "pallet-confidential/std",
+    "pallet-corporate-actions/std",
+    "pallet-grandpa/std",
+    "pallet-group/std",
+    "pallet-identity/std",
+    "pallet-im-online/std",
+    "pallet-indices/std",
+    "pallet-multisig/std",
+    "pallet-pips/std",
+    "pallet-portfolio/std",
+    "pallet-protocol-fee/std",
+    "pallet-scheduler/std",
+    "pallet-session/std",
+    "pallet-settlement/std",
+    "pallet-sto/std",
+    "pallet-timestamp/std",
+    "pallet-treasury/std",
+    "pallet-utility/std",
+    "polymesh-contracts/std",
+]

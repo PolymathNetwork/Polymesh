@@ -24,6 +24,6 @@ pallet-asset-old = { package = "pallet-asset", git = "https://github.com/Polymat
 polymesh-primitives-old = { package = "polymesh-primitives", git = "https://github.com/PolymathNetwork/Polymesh", rev = "14951c75b778d5ee75c8ecdc02b70b6eb6d7b172" }
 
 # New pallets
-polymesh-runtime = { package = "polymesh-runtime-testnet", path = "../pallets/runtime/testnet", features = ["migration-dry-run"] }
-pallet-asset = { path = "../pallets/asset" }
-polymesh-primitives = { path = "../primitives" }
+polymesh-runtime = { package = "polymesh-runtime-testnet", path = "../core/runtime/testnet", features = ["migration-dry-run"] }
+pallet-asset = { path = "../core/pallets/asset" }
+polymesh-primitives = { path = "../core/primitives" }

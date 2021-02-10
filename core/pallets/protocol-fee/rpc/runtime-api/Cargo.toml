@@ -1,0 +1,31 @@
+[package]
+name = "pallet-protocol-fee-rpc-runtime-api"
+version = "0.1.0"
+authors = ["Polymath"]
+edition = "2018"
+
+[dependencies]
+polymesh-common-utilities = { path = "../../../../common", default-features = false }
+
+# General
+serde = { version = "1.0.104", optional = true, features = ["derive"] }
+
+# Substrate
+codec = { package = "parity-scale-codec", version = "1.2.0", default-features = false, features = ["derive"] }
+sp-api = { git = 'https://github.com/PolymathNetwork/substrate', default_features = false, tag = "v2.0.1-1"}
+sp-runtime = { git = 'https://github.com/PolymathNetwork/substrate', default_features = false,  tag = "v2.0.1-1"}
+frame-support = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+
+[dev-dependencies]
+serde_json = "1.0.48"
+
+[features]
+default = ["std"]
+std = [
+    "serde",
+    "sp-api/std",
+    "codec/std",
+    "sp-runtime/std",
+    "frame-support/std",
+    "polymesh-common-utilities/std"
+]

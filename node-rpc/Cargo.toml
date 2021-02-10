@@ -10,11 +10,10 @@ repository = "https://github.com/PolymathNetwork/substrate"
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
-polymesh-primitives = { path = "../primitives", default-features = false }
-pallet-contracts-rpc = { git = "https://github.com/PolymathNetwork/substrate", tag = "v2.0.1-1" }
-pallet-group-rpc = { path = "../pallets/group/rpc" }
-pallet-staking-rpc = { path = "../pallets/staking/rpc" }
-pallet-protocol-fee-rpc = {  path = "../pallets/protocol-fee/rpc" }
+polymesh-primitives = { path = "../core/primitives" }
+pallet-group-rpc = { path = "../core/pallets/group/rpc" }
+pallet-staking-rpc = { path = "../core/pallets/staking/rpc" }
+pallet-protocol-fee-rpc = {  path = "../core/pallets/protocol-fee/rpc" }
 node-rpc = { path = "../rpc" }
 
 jsonrpc-core = "15.0.0"
@@ -28,6 +27,7 @@ sp-consensus = { git = "https://github.com/PolymathNetwork/substrate", tag = "v2
 sp-consensus-babe = { git = "https://github.com/PolymathNetwork/substrate", tag = "v2.0.1-1" }
 sp-block-builder = { git = "https://github.com/PolymathNetwork/substrate", tag = "v2.0.1-1" }
 txpool-api = { package = "sp-transaction-pool", git = "https://github.com/PolymathNetwork/substrate", tag = "v2.0.1-1" }
+pallet-contracts-rpc = { git = "https://github.com/PolymathNetwork/substrate", tag = "v2.0.1-1" }
 
 sc-rpc = { git = "https://github.com/PolymathNetwork/substrate", tag = "v2.0.1-1" }
 sc-consensus-babe = { git = "https://github.com/PolymathNetwork/substrate", tag = "v2.0.1-1" }

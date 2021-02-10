@@ -1,0 +1,47 @@
+[package]
+name = "pallet-portfolio"
+version = "0.1.0"
+authors = ["Polymath"]
+edition = "2018"
+
+[dependencies]
+# Common
+polymesh-common-utilities = { path = "../../common", default-features = false }
+polymesh-primitives = { path = "../../primitives", default-features = false }
+
+# Our Pallets
+pallet-balances = { path = "../balances", default-features = false  }
+pallet-identity = { path = "../identity", default-features = false  }
+pallet-permissions = { path = "../permissions", default-features = false }
+
+# Other
+serde = { version = "1.0.104", default-features = false }
+
+# Substrate
+codec = { package = "parity-scale-codec", version = "1.1.0", default-features = false, features = ["derive"] }
+frame-support = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+frame-system = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+sp-arithmetic = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+sp-std = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+
+# Only in STD
+frame-benchmarking = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1", optional = true }
+
+[features]
+equalize = []
+default = ["std", "equalize"]
+no_std = []
+only-staking = []
+std = [
+    "codec/std",
+    "frame-support/std",
+    "frame-system/std",
+    "pallet-balances/std",
+    "polymesh-common-utilities/std",
+    "polymesh-primitives/std",
+    "serde/std",
+    "sp-std/std",
+]
+runtime-benchmarks = [
+    "frame-benchmarking",
+]

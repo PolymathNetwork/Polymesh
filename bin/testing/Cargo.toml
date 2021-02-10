@@ -14,13 +14,15 @@ publish = true
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
-node-primitives = { package = "polymesh-primitives", path = "../../primitives" }
-node-runtime = { package = "polymesh-runtime-testnet", path = "../../pallets/runtime/testnet" }
-polymesh-common-utilities =  { path = "../../pallets/common" }
-pallet-transaction-payment = { path = "../../pallets/transaction-payment" }
-pallet-permissions = { path = "../../pallets/permissions" }
-pallet-staking = { path = "../../pallets/staking" }
-pallet-balances = { path = "../../pallets/balances" }
+node-primitives = { package = "polymesh-primitives", path = "../../core/primitives" }
+polymesh-common-utilities =  { path = "../../core/common" }
+
+pallet-transaction-payment = { path = "../../core/pallets/transaction-payment" }
+pallet-permissions = { path = "../../core/pallets/permissions" }
+pallet-staking = { path = "../../core/pallets/staking" }
+pallet-balances = { path = "../../core/pallets/balances" }
+node-runtime = { package = "polymesh-runtime-testnet", path = "../../core/runtime/testnet" }
+
 node-executor = { path = "../executor", features = ["wasmtime"] }
 
 sc-service = { git = "https://github.com/PolymathNetwork/substrate", tag = "v2.0.1-1", features = ["test-helpers", "db", "wasmtime"] }
@@ -42,7 +44,6 @@ frame-system = { git = "https://github.com/PolymathNetwork/substrate", tag = "v2
 substrate-test-client = { git = "https://github.com/PolymathNetwork/substrate", tag = "v2.0.1-1" }
 pallet-timestamp = { git = "https://github.com/PolymathNetwork/substrate", tag = "v2.0.1-1" }
 pallet-treasury = { git = "https://github.com/PolymathNetwork/substrate", tag = "v2.0.1-1" }
-wabt = "0.10.0"
 sp-api = { git = "https://github.com/PolymathNetwork/substrate", tag = "v2.0.1-1" }
 sp-finality-tracker = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
 sp-timestamp = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
@@ -50,6 +51,8 @@ sp-block-builder = { git = "https://github.com/PolymathNetwork/substrate", tag =
 sc-block-builder = { git = "https://github.com/PolymathNetwork/substrate", tag = "v2.0.1-1" }
 sp-inherents = { git = "https://github.com/PolymathNetwork/substrate", tag = "v2.0.1-1" }
 sp-blockchain = { git = "https://github.com/PolymathNetwork/substrate", tag = "v2.0.1-1" }
+
+wabt = "0.10.0"
 log = "0.4.8"
 tempfile = "3.1.0"
 fs_extra = "1"

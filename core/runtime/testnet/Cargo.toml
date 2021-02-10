@@ -1,0 +1,177 @@
+[package]
+name = "polymesh-runtime-testnet"
+version = "0.1.0"
+authors = ["Polymath Inc."]
+edition = "2018"
+build = "build.rs"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+# Common
+polymesh-common-utilities = { path = "../../common", default-features = false }
+polymesh-runtime-common = { path = "../common", default-features = false}
+polymesh-primitives = { path = "../../primitives", default-features = false }
+polymesh-weights = { path = "../../weights", default-features = false }
+polymesh-extensions = { path = "../extensions", default-features = false }
+
+# Our pallets
+pallet-asset = { path = "../../pallets/asset", default-features = false }
+pallet-balances = { path = "../../pallets/balances", default-features = false }
+pallet-sto = { path = "../../pallets/sto", default-features = false }
+pallet-bridge = { path = "../../pallets/bridge", default-features = false }
+pallet-committee = { path = "../../pallets/committee", default-features = false }
+pallet-compliance-manager = { path = "../../pallets/compliance-manager", default-features = false }
+pallet-confidential = { path = "../../pallets/confidential", default-features = false }
+pallet-corporate-actions = { path = "../../pallets/corporate-actions", default-features = false }
+pallet-group = { path = "../../pallets/group", default-features = false }
+pallet-group-rpc-runtime-api = { path = "../../pallets/group/rpc/runtime-api", default-features = false }
+pallet-identity = { path = "../../pallets/identity", default-features = false }
+pallet-im-online = { path = "../../pallets/im-online", default-features = false }
+pallet-multisig = { path = "../../pallets/multisig", default-features = false }
+pallet-permissions = { path = "../../pallets/permissions", default-features = false }
+pallet-pips = { path = "../../pallets/pips", default-features = false }
+pallet-portfolio = { path = "../../pallets/portfolio", default-features = false }
+pallet-protocol-fee = { path = "../../pallets/protocol-fee", default-features = false }
+pallet-settlement = { path = "../../pallets/settlement", default-features = false }
+pallet-staking = { path = "../../pallets/staking", default-features = false }
+pallet-statistics = { path = "../../pallets/statistics", default-features = false }
+pallet-transaction-payment = { path = "../../pallets/transaction-payment", default-features = false }
+pallet-treasury = { path = "../../pallets/treasury", default-features = false }
+pallet-utility = { path = "../../pallets/utility", default-features = false }
+polymesh-contracts = { path = "../../pallets/contracts", default-features = false }
+pallet-sudo = { path = "../../pallets/sudo", default-features = false }
+
+# RPC
+node-rpc-runtime-api = { path = "../../../rpc/runtime-api", default-features = false }
+pallet-staking-rpc-runtime-api = { path = "../../pallets/staking/rpc/runtime-api", default-features = false }
+pallet-protocol-fee-rpc-runtime-api = { path = "../../pallets/protocol-fee/rpc/runtime-api", default-features = false }
+pallet-contracts-rpc-runtime-api = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+
+# Others
+lazy_static = { version = "1.4.0", default-features = false }
+serde = { version = "1.0.104", default-features = false }
+serde_derive = { version = "1.0.104", optional = true }
+
+# Substrate
+codec = { package = "parity-scale-codec", version = "1.2.0", default-features = false, features = ["derive"] }
+sp-core = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+sp-std = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+sp-io = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+sp-runtime = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+sp-version = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+sp-api = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+sp-inherents = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+sp-offchain = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+sp-staking = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+sp-consensus-babe = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+sp-session = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+sp-authority-discovery = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+sp-transaction-pool = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+sp-block-builder = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+sp-arithmetic = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+
+pallet-authorship = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+pallet-executive = { package = "frame-executive", git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+pallet-finality-tracker = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+pallet-grandpa = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+pallet-indices = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+pallet-offences = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+pallet-session = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+pallet-timestamp = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+pallet-babe = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+pallet-authority-discovery = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+pallet-randomness-collective-flip = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+pallet-scheduler = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+pallet-contracts = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+pallet-contracts-primitives = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1"}
+pallet-staking-reward-curve = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+
+frame-system = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+frame-support = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+frame-system-rpc-runtime-api = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+smallvec = "1.4.0"
+
+[build-dependencies]
+polymesh-build-tool = { path = "../build_tool", default-features = false }
+
+[features]
+default = ["std", "equalize"]
+equalize = []
+migration-dry-run = []
+no_std = [
+    "pallet-confidential/no_std",
+    "pallet-confidential/u64_backend",
+]
+std = [
+    "codec/std",
+    "frame-support/std",
+    "frame-system-rpc-runtime-api/std",
+    "frame-system/std",
+    "node-rpc-runtime-api/std",
+    "pallet-asset/std",
+    "pallet-authority-discovery/std",
+    "pallet-authorship/std",
+    "pallet-babe/std",
+    "pallet-balances/std",
+    "pallet-sto/std",
+    "pallet-bridge/std",
+    "pallet-committee/std",
+    "pallet-compliance-manager/std",
+    "pallet-confidential/std",
+    "pallet-contracts-primitives/std",
+    "pallet-contracts-rpc-runtime-api/std",
+    "pallet-contracts/std",
+    "pallet-executive/std",
+    "pallet-finality-tracker/std",
+    "pallet-grandpa/std",
+    "pallet-group-rpc-runtime-api/std",
+    "pallet-group/std",
+    "pallet-identity/std",
+    "pallet-im-online/std",
+    "pallet-indices/std",
+    "pallet-multisig/std",
+    "pallet-offences/std",
+    "pallet-permissions/std",
+    "pallet-pips/std",
+    "pallet-portfolio/std",
+    "pallet-protocol-fee-rpc-runtime-api/std",
+    "pallet-protocol-fee/std",
+    "pallet-randomness-collective-flip/std",
+    "pallet-scheduler/std",
+    "pallet-session/std",
+    "pallet-settlement/std",
+    "pallet-staking-rpc-runtime-api/std",
+    "pallet-staking/std",
+    "pallet-statistics/std",
+    "pallet-sudo/std",
+    "pallet-timestamp/std",
+    "pallet-transaction-payment/std",
+    "pallet-treasury/std",
+    "pallet-utility/std",
+    "polymesh-common-utilities/std",
+    "polymesh-primitives/std",
+    "polymesh-runtime-common/std",
+    "polymesh-weights/std",
+    "serde/std",
+    "sp-api/std",
+    "sp-arithmetic/std",
+    "sp-authority-discovery/std",
+    "sp-block-builder/std",
+    "sp-consensus-babe/std",
+    "sp-core/std",
+    "sp-inherents/std",
+    "sp-io/std",
+    "sp-offchain/std",
+    "sp-runtime/std",
+    "sp-session/std",
+    "sp-staking/std",
+    "sp-std/std",
+    "sp-transaction-pool/std",
+    "sp-version/std",
+    "polymesh-contracts/std"
+]
+
+runtime-benchmarks = [
+    "pallet-asset/runtime-benchmarks",
+]

@@ -10,20 +10,13 @@ license = "GPL-3.0-or-later WITH Classpath-exception-2.0"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-node-primitives = { package = "polymesh-primitives", path = "../../primitives" }
-node-runtime = { package = "polymesh-runtime-testnet", path = "../../pallets/runtime/testnet" }
+node-primitives = { package = "polymesh-primitives", path = "../../core/primitives" }
+node-runtime = { package = "polymesh-runtime-testnet", path = "../../core/runtime/testnet" }
 node-testing = { path = "../testing" }
 sc-cli = { git = "https://github.com/PolymathNetwork/substrate", tag = "v2.0.1-1", features = ["wasmtime"] }
 sc-client-api = { git = "https://github.com/PolymathNetwork/substrate", tag = "v2.0.1-1" }
 sp-runtime = { git = "https://github.com/PolymathNetwork/substrate", tag = "v2.0.1-1" }
 sp-state-machine = { git = "https://github.com/PolymathNetwork/substrate", tag = "v2.0.1-1" }
-log = "0.4.8"
-serde = "1.0.101"
-serde_json = "1.0.41"
-structopt = "0.3"
-derive_more = "0.99.2"
-kvdb = "0.7"
-kvdb-rocksdb = "0.9"
 sp-trie = { git = "https://github.com/PolymathNetwork/substrate", tag = "v2.0.1-1" }
 sp-core = { git = "https://github.com/PolymathNetwork/substrate", tag = "v2.0.1-1" }
 sp-consensus = { git = "https://github.com/PolymathNetwork/substrate", tag = "v2.0.1-1" }
@@ -33,6 +26,8 @@ sp-inherents = { git = "https://github.com/PolymathNetwork/substrate", tag = "v2
 sp-finality-tracker = { git = "https://github.com/PolymathNetwork/substrate", tag = "v2.0.1-1" }
 sp-timestamp = { git = "https://github.com/PolymathNetwork/substrate", tag = "v2.0.1-1" }
 sp-tracing = { git = "https://github.com/PolymathNetwork/substrate", tag = "v2.0.1-1" }
+sc-transaction-pool = { git = "https://github.com/PolymathNetwork/substrate", tag = "v2.0.1-1" }
+
 hash-db = "0.15.2"
 tempfile = "3.1.0"
 fs_extra = "1"
@@ -41,5 +36,4 @@ rand = { version = "0.7.2", features = ["small_rng"] }
 lazy_static = "1.4.0"
 parity-util-mem = { version = "0.7.0", default-features = false, features = ["primitive-types"] }
 parity-db = { version = "0.1.2" }
-sc-transaction-pool = { git = "https://github.com/PolymathNetwork/substrate", tag = "v2.0.1-1" }
 futures = { version = "0.3.4", features = ["thread-pool"] }

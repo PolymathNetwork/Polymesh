@@ -1,0 +1,52 @@
+[package]
+name = "pallet-multisig"
+version = "0.1.0"
+authors = ["Polymath Inc."]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+polymesh-common-utilities = {path = "../../common", default-features = false}
+polymesh-primitives = { path = "../../primitives", default-features = false}
+
+pallet-identity = { path = "../identity", default-features = false}
+pallet-permissions = { path = "../permissions", default-features = false }
+
+# General
+serde = { version = "1.0.104", default-features = false }
+
+# Substrate
+codec = { package = "parity-scale-codec", version = "1.2.0", default-features = false, features = ["derive"] }
+sp-runtime = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+sp-std = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+sp-core = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+sp-version = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+
+frame-system = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+frame-support = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+frame-benchmarking = { default-features = false, git = "https://github.com/PolymathNetwork/substrate", tag = "v2.0.1-1", optional = true }
+
+pallet-timestamp = { git = "https://github.com/PolymathNetwork/substrate", default-features = false, tag = "v2.0.1-1" }
+
+[features]
+equalize = []
+default = ["std", "equalize"]
+no_std = []
+only-staking = []
+std = [
+	"serde/std",
+	"codec/std",
+	"sp-std/std",
+	"sp-core/std",
+	"sp-runtime/std",
+	"frame-benchmarking/std",
+	"frame-system/std",
+	"frame-support/std",
+	"polymesh-primitives/std",
+	"polymesh-common-utilities/std",
+	"pallet-identity/std",
+]
+runtime-benchmarks = [
+	"frame-benchmarking",
+]

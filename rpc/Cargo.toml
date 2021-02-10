@@ -6,14 +6,13 @@ edition = "2018"
 
 [dependencies]
 node-rpc-runtime-api = { path = "./runtime-api", default-features = false }
+polymesh-primitives = { path = "../core/primitives", default-features = false }
 
-pallet-compliance-manager = { path = "../pallets/compliance-manager", default-features = false }
-pallet-pips = { path = "../pallets/pips", default-features = false }
-polymesh-primitives = { path = "../primitives", default-features = false }
-
-pallet-portfolio = { path = "../pallets/portfolio", default-features = false }
-pallet-identity = { path = "../pallets/identity", default-features = false }
-pallet-transaction-payment = { path = "../pallets/transaction-payment", default-features = false }
+pallet-compliance-manager = { path = "../core/pallets/compliance-manager", default-features = false }
+pallet-pips = { path = "../core/pallets/pips", default-features = false }
+pallet-portfolio = { path = "../core/pallets/portfolio", default-features = false }
+pallet-identity = { path = "../core/pallets/identity", default-features = false }
+pallet-transaction-payment = { path = "../core/pallets/transaction-payment", default-features = false }
 
 # Substrate
 codec = { package = "parity-scale-codec", version = "1.2.0" }
