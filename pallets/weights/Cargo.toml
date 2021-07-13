@@ -30,6 +30,7 @@ pallet-multisig = { path = "../multisig", default-features = false  }
 pallet-pips = { path = "../pips", default-features = false }
 pallet-portfolio = { path = "../portfolio", default-features = false  }
 pallet-protocol-fee = { path = "../protocol-fee", default-features = false  }
+pallet-rewards = { path = "../rewards", default-features = false  }
 pallet-settlement = { path = "../settlement", default-features = false  }
 pallet-statistics = { path = "../statistics", default-features = false  }
 pallet-sto = { path = "../sto", default-features = false  }

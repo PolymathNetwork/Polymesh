@@ -64,6 +64,7 @@ pub enum SystematicIssuers {
     Settlement,
     ClassicMigration,
     FiatTickersReservation,
+    Rewards,
 }
 
 impl core::fmt::Display for SystematicIssuers {
@@ -76,6 +77,7 @@ impl core::fmt::Display for SystematicIssuers {
             SystematicIssuers::Settlement => "Settlement module",
             SystematicIssuers::ClassicMigration => "Polymath Classic Imports and Reservations",
             SystematicIssuers::FiatTickersReservation => "Fiat Ticker Reservation",
+            SystematicIssuers::Rewards => "Reward module",
         };
 
         write!(f, "'{}'", value)
@@ -90,6 +92,7 @@ pub const SYSTEMATIC_ISSUERS: &[SystematicIssuers] = &[
     SystematicIssuers::Settlement,
     SystematicIssuers::ClassicMigration,
     SystematicIssuers::FiatTickersReservation,
+    SystematicIssuers::Rewards,
 ];
 
 impl SystematicIssuers {
@@ -104,6 +107,7 @@ impl SystematicIssuers {
             SystematicIssuers::Settlement => did::SETTLEMENT_MODULE_DID,
             SystematicIssuers::ClassicMigration => did::CLASSIC_MIGRATION_DID,
             SystematicIssuers::FiatTickersReservation => did::FIAT_TICKERS_RESERVATION_DID,
+            SystematicIssuers::Rewards => did::REWARDS_DID,
         }
     }
 
@@ -123,6 +127,7 @@ impl SystematicIssuers {
             SystematicIssuers::FiatTickersReservation => {
                 constants::FIAT_TICKERS_RESERVATION_MODULE_ID
             }
+            SystematicIssuers::Rewards => constants::REWARDS_MODULE_ID,
         }
     }
 }

@@ -295,6 +295,11 @@ impl pallet_test_utils::Config for Runtime {
     type WeightInfo = polymesh_weights::pallet_test_utils::WeightInfo;
 }
 
+impl pallet_rewards::Config for Runtime {
+    type Event = Event;
+    type WeightInfo = polymesh_weights::pallet_rewards::WeightInfo;
+}
+
 /// NB It is needed by benchmarks, in order to use `UserBuilder`.
 impl TestUtilsFn<AccountId> for Runtime {
     fn register_did(
@@ -392,6 +397,7 @@ construct_runtime!(
         TestUtils: pallet_test_utils::{Module, Call, Storage, Event<T> } = 50,
         Base: pallet_base::{Module, Call, Event} = 51,
         ExternalAgents: pallet_external_agents::{Module, Call, Storage, Event} = 52,
+        Rewards: pallet_rewards::{Module, Call, Storage, Event<T> } = 53,
     }
 );
 

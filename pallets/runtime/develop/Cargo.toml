@@ -27,10 +27,11 @@ pallet-external-agents = { path = "../../external-agents", default-features = fa
 pallet-group = { path = "../../group", default-features = false }
 pallet-identity = { path = "../../identity", default-features = false }
 pallet-multisig = { path = "../../multisig", default-features = false }
-pallet-permissions = { path = "../../permissions", default-features = false  }
+pallet-permissions = { path = "../../permissions", default-features = false }
 pallet-pips = { path = "../../pips", default-features = false }
-pallet-portfolio = { path = "../../portfolio", default-features = false  }
+pallet-portfolio = { path = "../../portfolio", default-features = false }
 pallet-protocol-fee = { path = "../../protocol-fee", default-features = false }
+pallet-rewards = { path = "../../rewards", default-features = false }
 pallet-sto = { path = "../../sto", default-features = false }
 pallet-settlement = { path = "../../settlement", default-features = false }
 pallet-staking = { path = "../../staking", default-features = false }
@@ -152,6 +153,7 @@ std = [
     "pallet-portfolio/std",
     "pallet-protocol-fee-rpc-runtime-api/std",
     "pallet-protocol-fee/std",
+    "pallet-rewards/std",
     "pallet-randomness-collective-flip/std",
     "pallet-scheduler/std",
     "pallet-session/std",

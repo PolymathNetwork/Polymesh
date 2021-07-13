@@ -124,6 +124,7 @@ members = [
     "pallets/multisig",
     "pallets/pips",
     "pallets/protocol-fee",
+    "pallets/rewards",
     "pallets/protocol-fee/rpc",
     "pallets/protocol-fee/rpc/runtime-api",
     "pallets/runtime/common",
