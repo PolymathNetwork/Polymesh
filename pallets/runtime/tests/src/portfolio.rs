@@ -88,7 +88,7 @@ fn can_create_rename_delete_portfolio() {
 }
 
 #[test]
-fn can_recover_funds_from_deleted_portfolio() {
+fn cannot_delete_portfolio_with_asset() {
     ExtBuilder::default().build().execute_with(|| {
         System::set_block_number(1); // This is needed to enable events.
 
@@ -133,11 +133,12 @@ fn can_recover_funds_from_deleted_portfolio() {
         };
         ensure_balances(token.total_supply - move_amount, move_amount);
 
-        // Delete portfolio
-        assert_ok!(Portfolio::delete_portfolio(owner.origin(), num));
+        // Cannot delete portfolio as it's non-empty.
+        let delete = || Portfolio::delete_portfolio(owner.origin(), num);
+        assert_noop!(delete(), Error::PortfolioNotEmpty);
         ensure_balances(token.total_supply - move_amount, move_amount);
 
-        // Recover funds
+        // Remove remaining funds.
         assert_ok!(Portfolio::move_portfolio_funds(
             owner.origin(),
             owner_user_portfolio,
@@ -149,6 +150,9 @@ fn can_recover_funds_from_deleted_portfolio() {
             }]
         ));
         ensure_balances(token.total_supply, 0);
+
+        // And now we can delete.
+        assert_ok!(delete());
     });
 }
 

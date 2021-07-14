@@ -47,6 +47,7 @@
 pub mod benchmarking;
 
 use codec::{Decode, Encode};
+use core::{iter, mem};
 use frame_support::{
     decl_error, decl_module, decl_storage, dispatch::DispatchResult, ensure, storage::StorageValue,
     weights::Weight, IterableStorageDoubleMap,
@@ -60,10 +61,11 @@ use polymesh_primitives::{
     extract_auth, identity_id::PortfolioValidityResult, storage_migration_ver, IdentityId,
     PortfolioId, PortfolioKind, PortfolioName, PortfolioNumber, SecondaryKey, Ticker,
 };
-use sp_arithmetic::traits::{CheckedSub, Saturating};
-use sp_std::{iter, mem, prelude::Vec};
+use sp_arithmetic::traits::{CheckedSub, Saturating, Zero};
+use sp_std::collections::btree_map::BTreeMap;
+use sp_std::prelude::Vec;
 
-storage_migration_ver!(1);
+storage_migration_ver!(2);
 
 type Identity<T> = identity::Module<T>;
 
@@ -81,34 +83,44 @@ pub struct MovePortfolioItem<Balance> {
 
 decl_storage! {
     trait Store for Module<T: Config> as Portfolio {
+        /// The next portfolio sequence number of an identity.
+        pub NextPortfolioNumber get(fn next_portfolio_number):
+            map hasher(twox_64_concat) IdentityId => PortfolioNumber;
+
         /// The set of existing portfolios with their names. If a certain pair of a DID and
         /// portfolio number maps to `None` then such a portfolio doesn't exist. Conversely, if a
         /// pair maps to `Some(name)` then such a portfolio exists and is called `name`.
         pub Portfolios get(fn portfolios):
             double_map hasher(twox_64_concat) IdentityId, hasher(twox_64_concat) PortfolioNumber =>
             PortfolioName;
+
+        /// How many assets with non-zero balance this portfolio contains.
+        pub PortfolioAssetCount get(fn portfolio_has_assets):
+            map hasher(twox_64_concat) PortfolioId => u64;
+
         /// The asset balances of portfolios.
         pub PortfolioAssetBalances get(fn portfolio_asset_balances):
             double_map hasher(twox_64_concat) PortfolioId, hasher(blake2_128_concat) Ticker =>
             T::Balance;
-        /// The next portfolio sequence number of an identity.
-        pub NextPortfolioNumber get(fn next_portfolio_number):
-            map hasher(twox_64_concat) IdentityId => PortfolioNumber;
-        /// The custodian of a particular portfolio. None implies that the identity owner is the custodian.
-        pub PortfolioCustodian get(fn portfolio_custodian):
-            map hasher(twox_64_concat) PortfolioId => Option<IdentityId>;
+
         /// Amount of assets locked in a portfolio.
         /// These assets show up in portfolio balance but can not be transferred away.
         pub PortfolioLockedAssets get(fn locked_assets):
             double_map hasher(twox_64_concat) PortfolioId, hasher(blake2_128_concat) Ticker =>
             T::Balance;
+
+        /// The custodian of a particular portfolio. None implies that the identity owner is the custodian.
+        pub PortfolioCustodian get(fn portfolio_custodian):
+            map hasher(twox_64_concat) PortfolioId => Option<IdentityId>;
+
         /// Tracks all the portfolios in custody of a particular identity. Only used by the UIs.
         /// When `true` is stored as the value for a given `(did, pid)`, it means that `pid` is in custody of `did`.
         /// `false` values are never explicitly stored in the map, and are instead inferred by the absence of a key.
         pub PortfoliosInCustody get(fn portfolios_in_custody):
             double_map hasher(twox_64_concat) IdentityId, hasher(twox_64_concat) PortfolioId => bool;
+
         /// Storage version.
-        StorageVersion get(fn storage_version) build(|_| Version::new(1).unwrap()): Version;
+        StorageVersion get(fn storage_version) build(|_| Version::new(2).unwrap()): Version;
     }
 }
 
@@ -145,15 +157,23 @@ decl_module! {
         fn on_runtime_upgrade() -> Weight {
             use polymesh_primitives::{storage_migrate_on, migrate::move_map_rename_module};
 
-            let storage_ver = StorageVersion::get();
-
-            storage_migrate_on!(storage_ver, 1, {
+            storage_migrate_on!(StorageVersion::get(), 1, {
                 move_map_rename_module::<PortfolioName>(b"Session", b"Portfolio", b"Portfolios");
                 move_map_rename_module::<T::Balance>(b"Session", b"Portfolio", b"PortfolioAssetBalances");
                 move_map_rename_module::<PortfolioNumber>(b"Session", b"Portfolio", b"NextPortfolioNumber");
                 move_map_rename_module::<Option<IdentityId>>(b"Session", b"Portfolio", b"PortfolioCustodian");
                 move_map_rename_module::<T::Balance>(b"Session", b"Portfolio", b"PortfolioLockedAssets");
                 move_map_rename_module::<bool>(b"Session", b"Portfolio", b"PortfoliosInCustody");
+            });
+
+            storage_migrate_on!(StorageVersion::get(), 2, {
+                let mut counts = BTreeMap::new();
+                for (pid, ..) in PortfolioAssetBalances::<T>::iter().filter(|(.., b)| !b.is_zero()) {
+                    *counts.entry(pid).or_insert(0) += 1;
+                }
+                for (pid, count) in counts {
+                    PortfolioAssetCount::insert(pid, count);
+                }
             });
 
             0
@@ -185,13 +205,24 @@ decl_module! {
                 ..
             } = Identity::<T>::ensure_origin_call_permissions(origin)?;
 
-            let portfolio_id = PortfolioId::user_portfolio(primary_did, num);
+            let pid = PortfolioId::user_portfolio(primary_did, num);
 
-            // Check that the portfolio exists and the secondary key has access to it
+            // Ensure the portfolio is empty. Otherwise we would end up with unreachable assets.
+            ensure!(PortfolioAssetCount::get(pid) == 0, Error::<T>::PortfolioNotEmpty);
+
+            // Check that the portfolio exists and the secondary key has access to it.
             Self::ensure_user_portfolio_validity(primary_did, num)?;
-            Self::ensure_portfolio_custody_and_permission(portfolio_id, primary_did, secondary_key.as_ref())?;
+            Self::ensure_portfolio_custody_and_permission(pid, primary_did, secondary_key.as_ref())?;
 
+            // Delete from storage.
             Portfolios::remove(&primary_did, &num);
+            PortfolioAssetCount::remove(&pid);
+            PortfolioAssetBalances::<T>::remove_prefix(&pid);
+            PortfolioLockedAssets::<T>::remove_prefix(&pid);
+            PortfoliosInCustody::remove(&Self::custodian(&pid), &pid);
+            PortfolioCustodian::remove(&pid);
+
+            // Emit event.
             Self::deposit_event(RawEvent::PortfolioDeleted(primary_did, num));
         }
 
@@ -295,7 +326,7 @@ decl_module! {
         #[weight = <T as Config>::WeightInfo::quit_portfolio_custody()]
         pub fn quit_portfolio_custody(origin, pid: PortfolioId) {
             let did = Identity::<T>::ensure_perms(origin)?;
-            let custodian = PortfolioCustodian::get(&pid).unwrap_or(pid.did);
+            let custodian = Self::custodian(&pid);
             ensure!(did == custodian, Error::<T>::UnauthorizedCustodian);
 
             PortfolioCustodian::remove(&pid);
@@ -315,6 +346,11 @@ decl_module! {
 }
 
 impl<T: Config> Module<T> {
+    /// Returns the custodian of `pid`.
+    fn custodian(pid: &PortfolioId) -> IdentityId {
+        PortfolioCustodian::get(&pid).unwrap_or(pid.did)
+    }
+
     /// Returns the ticker balance of the identity's default portfolio.
     pub fn default_portfolio_balance(
         did: IdentityId,
@@ -332,13 +368,17 @@ impl<T: Config> Module<T> {
         Self::portfolio_asset_balances(PortfolioId::user_portfolio(did, num), ticker)
     }
 
-    /// Sets the ticker balance of the identity's default portfolio to the given value.
+    /// Sets the ticker balance of the identity's default portfolio to `new`.
     pub fn set_default_portfolio_balance(
         did: IdentityId,
         ticker: &Ticker,
-        balance: <T as CommonConfig>::Balance,
+        new: <T as CommonConfig>::Balance,
     ) {
-        <PortfolioAssetBalances<T>>::insert(PortfolioId::default_portfolio(did), ticker, balance);
+        let pid = PortfolioId::default_portfolio(did);
+        <PortfolioAssetBalances<T>>::mutate(&pid, ticker, |old| {
+            Self::transition_asset_count(&pid, *old, new);
+            *old = new;
+        });
     }
 
     /// Returns the next portfolio number of a given identity and increments the stored number.
@@ -358,18 +398,31 @@ impl<T: Config> Module<T> {
     /// This function does not do any data validity checks.
     /// The caller must make sure that the portfolio, custodianship and free balance are valid before calling this function.
     pub fn unchecked_transfer_portfolio_balance(
-        from_portfolio: &PortfolioId,
-        to_portfolio: &PortfolioId,
+        from: &PortfolioId,
+        to: &PortfolioId,
         ticker: &Ticker,
         amount: <T as CommonConfig>::Balance,
     ) {
-        <PortfolioAssetBalances<T>>::mutate(from_portfolio, ticker, |from_balance| {
-            *from_balance = from_balance.saturating_sub(amount)
+        <PortfolioAssetBalances<T>>::mutate(from, ticker, |balance| {
+            let old = mem::replace(balance, balance.saturating_sub(amount));
+            Self::transition_asset_count(from, old, *balance);
         });
 
-        <PortfolioAssetBalances<T>>::mutate(to_portfolio, ticker, |to_balance| {
-            *to_balance = to_balance.saturating_add(amount)
+        <PortfolioAssetBalances<T>>::mutate(to, ticker, |balance| {
+            let old = mem::replace(balance, balance.saturating_add(amount));
+            Self::transition_asset_count(to, old, *balance);
         });
+    }
+
+    /// Handle cases where the balance for a ticker goes to and from 0.
+    fn transition_asset_count(pid: &PortfolioId, old: T::Balance, new: T::Balance) {
+        match (old.is_zero(), new.is_zero()) {
+            // 0 -> 1+, so increment count.
+            (true, false) => PortfolioAssetCount::mutate(pid, |c| *c = c.saturating_add(1)),
+            // 1+ -> 0, so decrement count.
+            (false, true) => PortfolioAssetCount::mutate(pid, |c| *c = c.saturating_sub(1)),
+            _ => {}
+        }
     }
 
     /// Ensure that the `portfolio` exists.
@@ -472,20 +525,21 @@ impl<T: Config> Module<T> {
     /// Reduces the balance of a portfolio.
     /// Throws an error if enough free balance is not available.
     pub fn reduce_portfolio_balance(
-        portfolio: &PortfolioId,
+        pid: &PortfolioId,
         ticker: &Ticker,
         amount: &<T as CommonConfig>::Balance,
     ) -> DispatchResult {
         // Ensure portfolio has enough free balance
-        let total_balance = Self::portfolio_asset_balances(&portfolio, ticker);
-        let locked_balance = Self::locked_assets(&portfolio, ticker);
+        let total_balance = Self::portfolio_asset_balances(&pid, ticker);
+        let locked_balance = Self::locked_assets(&pid, ticker);
         let remaining_balance = total_balance
             .checked_sub(amount)
             .filter(|rb| rb >= &locked_balance)
             .ok_or(Error::<T>::InsufficientPortfolioBalance)?;
 
-        // Update portfolio balance
-        <PortfolioAssetBalances<T>>::insert(portfolio, ticker, remaining_balance);
+        // Update portfolio balance.
+        <PortfolioAssetBalances<T>>::insert(pid, ticker, remaining_balance);
+        Self::transition_asset_count(pid, total_balance, remaining_balance);
 
         Ok(())
     }
@@ -526,7 +580,7 @@ impl<T: Config> Module<T> {
         Identity::<T>::accept_auth_with(&to.into(), auth_id, |data, from| {
             let pid = extract_auth!(data, PortfolioCustody(p));
 
-            let curr = PortfolioCustodian::get(&pid).unwrap_or(pid.did);
+            let curr = Self::custodian(&pid);
             <Identity<T>>::ensure_auth_by(from, curr)?;
 
             // Transfer custody of `pid` over to `to`, removing it from `curr`.
