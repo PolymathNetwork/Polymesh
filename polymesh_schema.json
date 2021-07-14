@@ -10,6 +10,7 @@
         "EventDid": "IdentityId",
         "InvestorUid": "[u8; 16]",
         "Ticker": "[u8; 12]",
+        "AssetId": "[u8; 12]",
         "CddId": "[u8; 32]",
         "ScopeId": "[u8; 32]",
         "PosRatio": "(u32, u32)",

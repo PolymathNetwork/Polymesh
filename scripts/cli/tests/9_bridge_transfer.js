@@ -14,7 +14,6 @@ async function main() {
 
   let alice = testEntities[0];
   let relay = testEntities[1];
-
   await bridgeTransfer(api, relay, alice);
 
   await freezeTransaction(api, alice);

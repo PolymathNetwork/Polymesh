@@ -35,17 +35,20 @@ let synced_block_ts = 0;
 // Amount to seed each key with
 let transfer_amount = new BN(25000).mul(new BN(10).pow(new BN(6)));
 
-const senderConditions1 = function (trusted_did, asset_did) {
-  return [
-    {
-      "condition_type": {
-        "IsPresent": {
-          "Exempted": asset_did
+const senderConditions1 = function (trusted_did) {
+  return {
+      condition_type: {
+        IsPresent: {
+          Exempted: {
+            Identity: trusted_did
+          }
         }
       },
-      issuers: [{ "issuer": trusted_did, "trusted_for": { "Any": "" } }]
-    },
-  ];
+      issuers: [{
+        issuer: trusted_did,
+        trusted_for: {Any: ""}
+      }]
+    };
 };
 
 const receiverConditions1 = senderConditions1;
@@ -228,6 +231,17 @@ const createIdentitiesWithExpiry = async function (
   return dids;
 };
 
+async function getLastAuth(api, account) {
+  const auths = await api.query.identity.authorizations.entries({Account: account.publicKey});
+    let last_auth_id = 0;
+    for (let i = 0; i < auths.length; i++) {    
+      if (auths[i][1].auth_id.toNumber() > last_auth_id) {
+        last_auth_id = auths[i][1].auth_id.toNumber();
+      }
+    }
+    return last_auth_id;
+}
+
 // Fetches DID that belongs to the Account Key
 async function keyToIdentityIds(api, accountKey) {
   let account_did = await api.query.identity.keyToIdentityIds(accountKey);
@@ -321,19 +335,26 @@ function tickerToDid(ticker) {
   );
 }
 
+// Returns a Hex from a String
+function stringToHex(ticker) {
+  return u8aToHex(
+    stringToU8a(ticker)
+  );
+}
+
 // Creates claim compliance for an asset
 async function createClaimCompliance(api, accounts, dids, ticker) {
 
   assert(ticker.length <= 12, "Ticker cannot be longer than 12 characters");
 
-  let senderConditions = senderConditions1(dids[1], { "Ticker": ticker });
-  let receiverConditions = receiverConditions1(dids[1], { "Ticker": ticker });
+  let senderConditions = senderConditions1(dids[1]);
+  let receiverConditions = receiverConditions1(dids[1]);
 
   let nonceObj = { nonce: nonces.get(accounts[0].address) };
   const transaction = api.tx.complianceManager.addComplianceRequirement(
     ticker,
-    senderConditions,
-    receiverConditions
+    [senderConditions],
+    [receiverConditions]
   );
   await sendTransaction(transaction, accounts[0], nonceObj);
 
@@ -609,6 +630,43 @@ async function addInstruction(
   return instructionCounter;
 }
 
+async function addConfidentialInstruction(
+  api,
+  venueCounter,
+  signer,
+  sender_did,
+  receiver_did,
+  mediator_did,
+  fromAccountId,
+  toAccountId
+) {
+  let instructionCounter = await api.query.settlement.instructionCounter();
+
+  let ConfidentialLeg = {
+    mediator: getDefaultPortfolio(mediator_did),
+    from_account_id: fromAccountId,
+    to_account_id: toAccountId
+  };
+
+    const transaction = await api.tx.settlement.addInstruction(
+      venueCounter,
+      0,
+      null,
+      null,
+      [
+        {
+          from: getDefaultPortfolio(sender_did),
+          to: getDefaultPortfolio(receiver_did),
+          kind: {Confidential: ConfidentialLeg}
+        }
+      ]
+    );
+
+  await sendTx(signer, transaction);
+
+  return instructionCounter;
+}
+
 async function claimReceipt(
   api,
   sender,
@@ -691,11 +749,13 @@ let reqImports = {
   withdrawInstruction,
   rejectInstruction,
   claimReceipt,
+  stringToHex,
   generateRandomEntity,
   generateRandomTicker,
   generateRandomKey,
   getDid,
   getDefaultPortfolio,
+  addConfidentialInstruction,
 };
 
 export { reqImports };

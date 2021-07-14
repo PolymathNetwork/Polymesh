@@ -30,6 +30,7 @@
     "10_governance_management": "node ./tests/10_governance_management.js",
     "11_A_settlement": "node ./tests/11_A_settlement.js",
     "11_B_settlement": "node ./tests/11_B_settlement.js",
+    "12_confidential_assets": "node ./tests/12_confidential_assets.js",
     "schema_test": "./util/schema_test.sh",
     "offchain_worker_test": "node ./util/offchain_worker_test.js",
     "test": "./test.sh"
@@ -41,6 +42,7 @@
     "@polkadot/api": "^3.7.1",
     "@polkadot/util": "^5.5.1",
     "@polkadot/util-crypto": "^5.5.1",
+    "@polymathnetwork/mercat-nodejs": "^0.1.0",
     "@types/clear": "^0.1.1",
     "@types/figlet": "^1.2.1",
     "@types/inquirer": "^7.3.1",
