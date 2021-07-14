@@ -1,0 +1,36 @@
+[package]
+name = "pallet-relayer"
+version = "0.1.0"
+authors = ["Polymath"]
+edition = "2018"
+
+[dependencies]
+pallet-identity = { path = "../identity", default-features = false}
+polymesh-common-utilities = { path = "../common", default-features = false }
+polymesh-primitives = { path = "../../primitives", default-features = false}
+
+# Substrate
+codec = { package = "parity-scale-codec", version = "2.0.0", default-features = false, features = ["derive"] }
+frame-system = { version = "3.0.0", default-features = false }
+frame-support = { version = "3.0.0", default-features = false }
+sp-std = { version = "3.0.0", default-features = false }
+
+# Only Benchmarking
+frame-benchmarking = { version = "3.0.0", default-features = false, optional = true }
+
+[features]
+default = ["std"]
+no_std = []
+std = [
+    "codec/std",
+    "frame-support/std",
+    "frame-system/std",
+    "sp-std/std",
+    "pallet-identity/std",
+    "polymesh-primitives/std",
+    "polymesh-common-utilities/std",
+]
+runtime-benchmarks = [
+    "frame-benchmarking",
+    "polymesh-common-utilities/runtime-benchmarks",
+]

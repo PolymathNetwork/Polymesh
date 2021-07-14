@@ -14,7 +14,8 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use crate::{
-    agent::AgentGroup, identity_id::IdentityId, secondary_key::Permissions, PortfolioId, Ticker,
+    agent::AgentGroup, identity_id::IdentityId, secondary_key::Permissions, Balance, PortfolioId,
+    Ticker,
 };
 use codec::{Decode, Encode};
 use frame_support::dispatch::DispatchError;
@@ -55,9 +56,13 @@ pub enum AuthorizationData<AccountId> {
     TransferCorporateActionAgent(Ticker),
     /// Authorization to become an agent of the `Ticker` with the `AgentGroup`.
     BecomeAgent(Ticker, AgentGroup),
+    /// Add Relayer paying key to user key
+    /// Must be issued by the paying key.
+    /// `AddRelayerPayingKey(user_key, paying_key, polyx_limit)`
+    AddRelayerPayingKey(AccountId, AccountId, Balance),
 }
 
-impl<T> AuthorizationData<T> {
+impl<AccountId> AuthorizationData<AccountId> {
     /// Returns the `AuthorizationType` of this auth data.
     pub fn auth_type(&self) -> AuthorizationType {
         match self {
@@ -71,6 +76,7 @@ impl<T> AuthorizationData<T> {
             Self::TransferAssetOwnership(..) => AuthorizationType::TransferAssetOwnership,
             Self::JoinIdentity(..) => AuthorizationType::JoinIdentity,
             Self::PortfolioCustody(..) => AuthorizationType::PortfolioCustody,
+            Self::AddRelayerPayingKey(..) => AuthorizationType::AddRelayerPayingKey,
             Self::Custom(..) => AuthorizationType::Custom,
             Self::NoData => AuthorizationType::NoData,
         }
@@ -102,6 +108,8 @@ pub enum AuthorizationType {
     NoData,
     /// Authorization to become an agent of a ticker.
     BecomeAgent,
+    /// Authorization to add a Relayer paying key.
+    AddRelayerPayingKey,
 }
 
 impl<AccountId> Default for AuthorizationData<AccountId> {

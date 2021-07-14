@@ -47,6 +47,8 @@ mod portfolio;
 #[cfg(test)]
 mod protocol_fee;
 #[cfg(test)]
+mod relayer_test;
+#[cfg(test)]
 mod settlement_test;
 #[cfg(test)]
 mod signed_extra;

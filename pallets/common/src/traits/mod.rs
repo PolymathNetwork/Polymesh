@@ -49,6 +49,7 @@ pub trait CommonConfig: frame_system::Config + permissions::Config {
         + Debug
         + Unsigned
         + From<u128>
+        + Into<u128>
         + From<Self::BlockNumber>;
 
     type AssetSubTraitTarget: asset::AssetSubTrait<Self::Balance>;
@@ -78,6 +79,7 @@ pub mod transaction_payment;
 pub use transaction_payment::{CddAndFeeDetails, ChargeTxFee};
 pub mod permissions;
 pub use permissions::{AccountCallPermissionsData, CheckAccountCallPermissions};
+pub mod relayer;
 pub mod statistics;
 
 pub trait TestUtilsFn<AccountId> {

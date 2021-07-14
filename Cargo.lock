@@ -4916,6 +4916,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "pallet-relayer"
+version = "0.1.0"
+dependencies = [
+ "frame-benchmarking 3.1.0",
+ "frame-support",
+ "frame-system",
+ "pallet-identity",
+ "parity-scale-codec 2.1.3",
+ "polymesh-common-utilities",
+ "polymesh-primitives",
+ "sp-std",
+]
+
+[[package]]
 name = "pallet-scheduler"
 version = "3.0.0"
 source = "git+https://github.com/PolymathNetwork/substrate?branch=polymath-3.0.0#a4e65535d65dd0eabb361b0ad2dffa1f5409fb6a"
@@ -6046,6 +6060,7 @@ dependencies = [
  "pallet-protocol-fee",
  "pallet-protocol-fee-rpc-runtime-api",
  "pallet-randomness-collective-flip",
+ "pallet-relayer",
  "pallet-scheduler",
  "pallet-session",
  "pallet-settlement",
@@ -6121,6 +6136,7 @@ dependencies = [
  "pallet-protocol-fee",
  "pallet-protocol-fee-rpc-runtime-api",
  "pallet-randomness-collective-flip",
+ "pallet-relayer",
  "pallet-scheduler",
  "pallet-session",
  "pallet-settlement",
@@ -6197,6 +6213,7 @@ dependencies = [
  "pallet-protocol-fee",
  "pallet-protocol-fee-rpc-runtime-api",
  "pallet-randomness-collective-flip",
+ "pallet-relayer",
  "pallet-scheduler",
  "pallet-session",
  "pallet-settlement",
@@ -6281,6 +6298,7 @@ dependencies = [
  "pallet-protocol-fee",
  "pallet-protocol-fee-rpc-runtime-api",
  "pallet-randomness-collective-flip",
+ "pallet-relayer",
  "pallet-scheduler",
  "pallet-session",
  "pallet-settlement",
@@ -6351,6 +6369,7 @@ dependencies = [
  "pallet-pips",
  "pallet-portfolio",
  "pallet-protocol-fee",
+ "pallet-relayer",
  "pallet-scheduler",
  "pallet-session",
  "pallet-settlement",
@@ -6362,6 +6381,7 @@ dependencies = [
  "pallet-treasury 0.1.0",
  "pallet-utility",
  "polymesh-runtime-common",
+ "sp-std",
 ]
 
 [[package]]

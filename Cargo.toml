@@ -126,6 +126,7 @@ members = [
     "pallets/protocol-fee",
     "pallets/protocol-fee/rpc",
     "pallets/protocol-fee/rpc/runtime-api",
+    "pallets/relayer",
     "pallets/runtime/common",
     "pallets/runtime/develop",
     "pallets/runtime/itn",

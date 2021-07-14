@@ -313,9 +313,6 @@ benchmarks! {
         );
     }: _(caller.origin, signatory, auth_id, true)
 
-    // TODO: accept_authorization. The worst case of `accept_authorization` will be whatever authorization type takes most resources.
-    // A defensive weight has been hardcoded for now but it should be updated once we've done benchmarks for all auth types.
-
     // TODO: fix this.
     // Account keyring is not available in no_std so it's not possible to sign data directly.
     // However, substrate injects the required functions as host functions in WASM.

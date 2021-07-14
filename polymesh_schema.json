@@ -143,6 +143,10 @@
       "secondary_key": "SecondaryKey",
       "auth_signature": "Signature"
     },
+    "Subsidy": {
+      "paying_key": "AccountId",
+      "remaining": "Balance"
+    },
     "IdentityRole": {
       "_enum": [
         "Issuer",
@@ -691,7 +695,8 @@
         "Custom": "Ticker",
         "NoData": "",
         "TransferCorporateActionAgent": "Ticker",
-        "BecomeAgent": "(Ticker, AgentGroup)"
+        "BecomeAgent": "(Ticker, AgentGroup)",
+        "AddRelayerPayingKey": "(AccountId, AccountId, Balance)"
       }
     },
     "SmartExtensionType": {

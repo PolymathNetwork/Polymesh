@@ -15,6 +15,7 @@ pallet-indices = { version = "3.0.0", default-features = false }
 pallet-grandpa = { version = "3.0.0", default-features = false }
 pallet-scheduler = { version = "3.0.0", default-features = false }
 pallet-session = { version = "3.0.0", default-features = false }
+sp-std = { version = "3.0.0", default-features = false }
 
 # our pallets
 pallet-asset = { path = "../asset", default-features = false }
@@ -30,6 +31,7 @@ pallet-multisig = { path = "../multisig", default-features = false  }
 pallet-pips = { path = "../pips", default-features = false }
 pallet-portfolio = { path = "../portfolio", default-features = false  }
 pallet-protocol-fee = { path = "../protocol-fee", default-features = false  }
+pallet-relayer = { path = "../relayer", default-features = false }
 pallet-settlement = { path = "../settlement", default-features = false  }
 pallet-statistics = { path = "../statistics", default-features = false  }
 pallet-sto = { path = "../sto", default-features = false  }
@@ -43,6 +45,7 @@ polymesh-runtime-common = { path = "../runtime/common", default-features = false
 default = ["std"]
 no_std = []
 std = [
+    "sp-std/std",
     "frame-system/std",
     "pallet-asset/std",
     "pallet-babe/std",
@@ -59,6 +62,7 @@ std = [
     "pallet-pips/std",
     "pallet-portfolio/std",
     "pallet-protocol-fee/std",
+    "pallet-relayer/std",
     "pallet-scheduler/std",
     "pallet-session/std",
     "pallet-settlement/std",

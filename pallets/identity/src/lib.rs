@@ -74,7 +74,6 @@
 //! - `unfreeze_secondary_keys` - Re-enables all secondary keys of the caller's identity.
 //! - `add_authorization` - Adds an authorization.
 //! - `remove_authorization` - Removes an authorization.
-//! - `accept_authorization` - Accepts an authorization.
 //! - `add_secondary_keys_with_authorization` - Adds secondary keys to target identity `id`.
 //! - `revoke_offchain_authorization` - Revokes the `auth` off-chain authorization of `signer`.
 //! - `add_investor_uniqueness_claim` - Adds InvestorUniqueness claim for a given target identity.
@@ -205,6 +204,16 @@ decl_storage! {
 
         /// Storage version.
         StorageVersion get(fn storage_version) build(|_| Version::new(3).unwrap()): Version;
+
+        /// How many "strong" references to the account key.
+        ///
+        /// Strong references will block a key from leaving it's identity.
+        ///
+        /// Pallets using "strong" references to account keys:
+        /// * Relayer: For `user_key` and `paying_key`
+        ///
+        pub AccountKeyRefCount get(fn account_key_ref_count):
+            map hasher(blake2_128_concat) T::AccountId => u64;
     }
     add_extra_genesis {
         // Identities at genesis.
@@ -336,6 +345,13 @@ decl_module! {
                 ..
             } = Self::ensure_origin_call_permissions(origin)?;
             let _grants_checked = Self::grant_check_only_primary_key(&sender, did)?;
+
+            // Ensure that it is safe to unlink the secondary keys from the did.
+            for signer in &signers_to_remove {
+                if let Signatory::Account(key) = &signer {
+                    Self::ensure_key_unlinkable_from_did(key)?;
+                }
+            }
 
             // Remove links and get all authorization IDs per signer.
             signers_to_remove
@@ -816,7 +832,9 @@ decl_error! {
         /// Do not allow forwarded call to be called recursively
         RecursionNotAllowed,
         /// Claim and Proof versions are different.
-        ClaimAndProofVersionsDoNotMatch
+        ClaimAndProofVersionsDoNotMatch,
+        /// The account key is being used, it can't be unlinked.
+        AccountKeyIsBeingUsed
     }
 }
 
@@ -829,6 +847,25 @@ impl<T: Config> Module<T> {
 
     pub fn ensure_no_id_record(id: IdentityId) -> DispatchResult {
         ensure!(!Self::is_identity_exists(&id), Error::<T>::DidAlreadyExists);
+        Ok(())
+    }
+
+    /// Increment the reference counter for `key`.
+    pub fn add_account_key_ref_count(key: &T::AccountId) {
+        <AccountKeyRefCount<T>>::mutate(key, |n| *n = n.saturating_add(1_u64));
+    }
+
+    /// Decrement the reference counter for `key`.
+    pub fn remove_account_key_ref_count(key: &T::AccountId) {
+        <AccountKeyRefCount<T>>::mutate(key, |n| *n = n.saturating_sub(1_u64));
+    }
+
+    /// Ensure that the account key is safe to unlink from it's identity.
+    fn ensure_key_unlinkable_from_did(key: &T::AccountId) -> DispatchResult {
+        ensure!(
+            <AccountKeyRefCount<T>>::get(key) == 0,
+            Error::<T>::AccountKeyIsBeingUsed
+        );
         Ok(())
     }
 
@@ -965,9 +1002,6 @@ impl<T: Config> Module<T> {
 
     /// Accepts an authorization `auth_id` as `target`,
     /// executing `accepter` for case-specific additional validation and storage changes.
-    ///
-    /// Used when encoding one-off authorization-accepting extrinsics,
-    /// as opposed to `accept_authorization`.
     pub fn accept_auth_with(
         target: &Signatory<T::AccountId>,
         auth_id: u64,
@@ -1033,7 +1067,7 @@ impl<T: Config> Module<T> {
         rotation_for_did: IdentityId,
         optional_cdd_auth_id: Option<u64>,
     ) -> DispatchResult {
-        // Aceept authorization from CDD service provider
+        // Accept authorization from CDD service provider.
         if Self::cdd_auth_for_primary_key_rotation() {
             let auth_id = optional_cdd_auth_id
                 .ok_or_else(|| Error::<T>::InvalidAuthorizationFromCddProvider)?;
@@ -1057,13 +1091,18 @@ impl<T: Config> Module<T> {
 
         Self::ensure_key_did_unlinked(&sender)?;
 
-        // Replace primary key of the owner that initiated key rotation
-        let old_primary_key = Self::did_records(&rotation_for_did).primary_key;
-        <DidRecords<T>>::mutate(&rotation_for_did, |record| {
-            Self::unlink_account_key_from_did(&record.primary_key, rotation_for_did);
-            record.primary_key = sender.clone();
-            Self::link_account_key_to_did(&sender, rotation_for_did);
-        });
+        // Get the current DidRecord.
+        let mut record = Self::did_records(&rotation_for_did);
+        let old_primary_key = record.primary_key;
+
+        // Ensure that it is safe to unlink the primary key from the did.
+        Self::ensure_key_unlinkable_from_did(&old_primary_key)?;
+
+        // Replace primary key of the owner that initiated key rotation.
+        Self::unlink_account_key_from_did(&old_primary_key, rotation_for_did);
+        record.primary_key = sender.clone();
+        Self::link_account_key_to_did(&sender, rotation_for_did);
+        <DidRecords<T>>::insert(&rotation_for_did, record);
 
         Self::deposit_event(RawEvent::PrimaryKeyUpdated(
             rotation_for_did,
@@ -1715,6 +1754,9 @@ impl<T: Config> Module<T> {
         ensure!(Self::is_signer(did, &signer), Error::<T>::NotASigner);
 
         if let Signatory::Account(key) = &signer {
+            // Ensure that it is safe to unlink the account key from the did.
+            Self::ensure_key_unlinkable_from_did(&key)?;
+
             // Unlink multisig signers.
             if T::MultiSig::is_multisig(key) {
                 ensure!(

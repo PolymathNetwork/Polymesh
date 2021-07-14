@@ -79,6 +79,10 @@ where
             Call::Identity(pallet_identity::Call::remove_authorization(_, auth_id, true)) => {
                 is_auth_valid(caller, auth_id, CallType::RemoveAuthorization)
             }
+            // Call made by a user key to accept subsidy from a paying key. The auth should be valid.
+            Call::Relayer(pallet_relayer::Call::accept_paying_key(auth_id)) => {
+                is_auth_valid(caller, auth_id, CallType::AcceptRelayerPayingKey)
+            }
             // Call made by an Account key to propose or approve a multisig transaction.
             // The multisig must have valid CDD and the caller must be a signer of the multisig.
             Call::MultiSig(
@@ -143,6 +147,7 @@ fn is_auth_valid(acc: &AccountId, auth_id: &u64, call_type: CallType) -> ValidPa
             (AuthorizationData::AddMultiSigSigner(_), CallType::AcceptMultiSigSigner)
             | (AuthorizationData::JoinIdentity(_), CallType::AcceptIdentitySecondary)
             | (AuthorizationData::RotatePrimaryKey(_), CallType::AcceptIdentityPrimary)
+            | (AuthorizationData::AddRelayerPayingKey(..), CallType::AcceptRelayerPayingKey)
             | (_, CallType::RemoveAuthorization),
         )) => check_cdd(&by),
         // None of the above apply, so error.
